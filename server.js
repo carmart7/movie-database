@@ -13,7 +13,7 @@ const db = mysql2.createConnection(
   {
     host: "localhost",
     user: "root",
-    password: "myPassw0rd!",
+    password: "Password",
     database: "movies_db",
   },
   console.log("successfully connected to movies_db")
@@ -40,28 +40,47 @@ app.get("/api/movie-reviews", (req, res) => {
   );
 });
 
-app.post('/api/add-movie', (req, res) => {
+app.post("/api/add-movie", (req, res) => {
   var movieName = req.body.movie;
   console.log(movieName);
-  db.query('INSERT INTO movies (movie_name) VALUES (?)', movieName, (err,result) => {
-    if(err) {
-      console.error(err);
+  db.query(
+    "INSERT INTO movies (movie_name) VALUES (?)",
+    movieName,
+    (err, result) => {
+      if (err) {
+        console.error(err);
+      }
+      console.log(result);
+      res.json(result);
     }
-    console.log(result);
-    res.json(result);
-  })
+  );
 });
 
-app.put('/api/review/:id', (req, res) => {
+app.put("/api/review/:id", (req, res) => {
   var reviewText = req.body.text;
   var reviewId = req.params.id;
-  db.query('UPDATE reviews SET review=? WHERE id=?', [reviewText, reviewId], (err, result) => {
-    if(err) {
+  db.query(
+    "UPDATE reviews SET review=? WHERE id=?",
+    [reviewText, reviewId],
+    (err, result) => {
+      if (err) {
+        console.error(err);
+      }
+      console.log(result);
+      res.json(result);
+    }
+  );
+});
+
+app.delete("/api/movie/:id", (req, res) => {
+  var movieID = req.params.id;
+  db.query("DELETE FROM movies WHERE id=?", movieID, (err, result) => {
+    if (err) {
       console.error(err);
     }
-    console.log(result);
+    console.log("delete successful");
     res.json(result);
-  })
-})
+  });
+});
 
 app.listen(PORT, () => console.log("app listening at http://localhost:3001"));
